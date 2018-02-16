@@ -1,25 +1,17 @@
-// Core
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-// Actions
+
 import { fetchOneGame, fetchPlayers } from '../actions/games/fetch'
 import { connect as subscribeToWebsocket } from '../actions/websocket'
-
-// import updateGame from '../actions/games/updateGame'
-
-// components
 import JoinGameDialog from '../components/games/JoinGameDialog'
+
 import Board from './Board'
-// Helpers
-import calculateWinner from './gameUtils'
-// Styling
 import './Game.css'
 
 const playerShape = PropTypes.shape({
   userId: PropTypes.string.isRequired,
-  symbol: PropTypes.string,
-  playerSquares: PropTypes.arrayOf(PropTypes.number),
+  pairs: PropTypes.arrayOf(PropTypes.string).isRequired,
   name: PropTypes.string
 })
 
@@ -37,7 +29,12 @@ class Game extends PureComponent {
       createdAt: PropTypes.string.isRequired,
       started: PropTypes.bool,
       turn: PropTypes.number.isRequired,
-      gameSquares: PropTypes.arrayOf(PropTypes.string)
+      cards: PropTypes.arrayOf(PropTypes.shape({
+        symbol: PropTypes.string,
+        _id: PropTypes.string,
+        won: PropTypes.bool,
+        visible: PropTypes.bool
+      }))
     }),
     currentPlayer: playerShape,
     isPlayer: PropTypes.bool,
@@ -61,42 +58,6 @@ class Game extends PureComponent {
     }
   }
 
-  // gameHandleClick(index) {
-  //   console.log("gameHandleClick() called, (game<-Board<-Square)", 'index', index)
-  //
-  //   const squares = this.props.game.gameSquares.slice()
-  //
-  //   // We have a winner or square already filled
-  //   if (calculateWinner(squares)) {
-  //     console.log('Winner')
-  //     return
-  //   }
-  //   if (!this.props.hasTurn) {
-  //     console.log('Not this players turn')
-  //     return
-  //   }
-  //   if (squares[index])  {
-  //     console.log('Square already filled')
-  //     return
-  //   }
-    // // Stuff I would like to send to update action
-    // //  - value of games.gameSquare[index] to be updated
-    // // Stuff action should update
-    // //  - change hasTurn
-
-  //   let newSquares = squares
-  //   newSquares[index] = this.props.currentPlayer.symbol
-  //
-  //   console.log('gameHandleClick() =>'
-  //     , 'index', index
-  //     , " ", '->', this.props.currentPlayer.symbol, ':', newSquares[index])
-  //   const newState = {
-  //     _id: this.props.game._id,
-  //     gameSquares: newSquares
-  //   }
-  //   updateGame(newState)
-  // }
-
   render() {
     const { game } = this.props
 
@@ -114,27 +75,24 @@ class Game extends PureComponent {
 
           <h1>Play TicTacToe!</h1>
 
-          <Board
-           // handleClick={(index) => this.gameHandleClick(index)}
-           { ...this.props }
-          />
+          <Board />
 
           <JoinGameDialog gameId={game._id} />
         </div>
+
         <div className="debug-props">
-          <h2>Debug Props from Game</h2>
+          <h2>Debug Props</h2>
           <pre>{JSON.stringify(this.props, true, 2)}</pre>
         </div>
-
       </div>
     )
   }
 }
 
 const mapStateToProps = ({ currentUser, games }, { match }) => {
-  const game          = games.filter((g) => (g._id === match.params.gameId))[0]
+  const game = games.filter((g) => (g._id === match.params.gameId))[0]
   const currentPlayer = game && game.players.filter((p) => (p.userId === currentUser._id))[0]
-  const hasTurn       = !!currentPlayer && game.players[game.turn].userId === currentUser._id
+  const hasTurn = !!currentPlayer && game.players[game.turn].userId === currentUser._id
   return {
     currentPlayer,
     game,
@@ -147,6 +105,5 @@ const mapStateToProps = ({ currentUser, games }, { match }) => {
 export default connect(mapStateToProps, {
   subscribeToWebsocket,
   fetchOneGame,
-  fetchPlayers,
-  // updateGame
+  fetchPlayers
 })(Game)

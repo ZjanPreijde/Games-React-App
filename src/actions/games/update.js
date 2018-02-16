@@ -1,6 +1,4 @@
 // src/actions/games/update.js
-// api/client.js does 'export default class ApiClient',
-//  'default' so import here can call it anything it wants
 import API from '../../api/client'
 import {
   APP_LOADING,
@@ -15,7 +13,7 @@ export default () => {
   return (dispatch) => {
     dispatch({ type: APP_LOADING })
 
-    api.post('/games', {})
+    api.patch('/games', {})
       .then(() => {
         dispatch({ type: APP_DONE_LOADING })
         dispatch({ type: LOAD_SUCCESS })

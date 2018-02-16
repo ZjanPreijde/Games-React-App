@@ -1,7 +1,14 @@
 {
-  "name": "game-lobby",
-  "version": "0.1.0",
+  "name": "tictactoe-game-app",
+  "version": "1.2.3",
+  "description": "React-App for TicTacToe games",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
   "dependencies": {
     "history": "^4.7.2",
     "material-ui": "^0.19.4",
@@ -15,11 +22,5 @@
     "redux-thunk": "^2.2.0",
     "socket.io-client": "^2.0.4",
     "superagent": "^3.8.0"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
   }
 }

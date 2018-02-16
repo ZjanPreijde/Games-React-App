@@ -1,0 +1,70 @@
+.game-container {
+  /* margin-left: 5%; */
+}
+
+.debug-props {
+  text-align: left;
+}
+/* Class from Game.js */
+.Game {
+  width: 100%;
+  /* text-align: center; */
+  text-align: left;
+  margin: 20px auto;
+}
+
+/* Not currently used */
+.game {
+  display: flex;
+  flex-direction: row;
+  margin-left: 10%;
+}
+
+.game-info {
+  margin-left: 20px;
+}
+
+.board {
+
+}
+
+.status {
+  margin-bottom: 10px;
+  font-size: 1.5em;
+}
+
+.board-row:after {
+  clear: both;
+  content: "";
+  display: table;
+}
+.square {
+  background: #fff;
+  border: 1px solid #999;
+  float: left;
+  font-size: 124px;
+  font-weight: bold;
+  line-height: 34px;
+  height: 134px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 134px;
+}
+
+.square:focus {
+  outline: none;
+}
+
+.kbd-navigation .square:focus {
+  background: #ddd;
+}
+
+.debug-props {
+  background-color: pink;
+}
+
+ol, ul {
+  padding-left: 30px;
+}

@@ -37,6 +37,12 @@ class Lobby extends PureComponent {
     return this.isPlayer(game) && game.players.length === 2
   }
 
+  loggedInName() {
+    return (!!this.props.currentUser ?
+      this.props.currentUser.name :
+      "player")
+  }
+
   renderGame = (game, index) => {
     let ActionIcon = this.isJoinable(game) ? JoinGameIcon : WatchGameIcon
     if (this.isPlayer(game)) ActionIcon = this.isPlayable(game) ? PlayGameIcon : WaitingIcon
@@ -59,7 +65,8 @@ class Lobby extends PureComponent {
   render() {
     return (
       <div className="Lobby">
-        <h1>Lobby!</h1>
+        <h1>Welcome to our Game Lobby, {this.loggedInName()}!</h1>
+        <p>Want to create, join or watch a game?</p>
         <CreateGameButton />
         <Paper className="paper">
           <Menu>
@@ -73,4 +80,6 @@ class Lobby extends PureComponent {
 
 const mapStateToProps = ({ games, currentUser }) => ({ games, currentUser })
 
-export default connect(mapStateToProps, { fetchGames, subscribeToWebsocket, fetchPlayers, push })(Lobby)
+export default connect(mapStateToProps,
+  { fetchGames, subscribeToWebsocket, fetchPlayers, push }
+)(Lobby)

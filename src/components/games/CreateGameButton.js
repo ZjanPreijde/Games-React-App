@@ -3,7 +3,9 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import RaisedButton from 'material-ui/RaisedButton'
-import StarIcon from 'material-ui/svg-icons/action/favorite'
+// import StarIcon from 'material-ui/svg-icons/action/favorite'
+// import StarIcon from 'material-ui/svg-icons/action/stars'
+import StarIcon from 'material-ui/svg-icons/action/play-for-work'
 import createGame from '../../actions/games/create'
 
 class CreateGameButton extends PureComponent {
@@ -17,10 +19,11 @@ class CreateGameButton extends PureComponent {
     return (
       <div className="CreateGameButton">
         <RaisedButton
-          label="Create Game"
+          label="Start a New Game"
           primary={true}
           onClick={this.props.createGame}
-          icon={<StarIcon />} />
+          icon={<StarIcon />}
+        />
       </div>
     )
   }
