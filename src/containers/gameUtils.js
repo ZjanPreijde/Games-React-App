@@ -1,7 +1,6 @@
 
 export default function calculateWinner(squares) {
-  // console.log(squares)
-  // debugger
+//  console.table(squares)
   const winningLines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -14,7 +13,7 @@ export default function calculateWinner(squares) {
   ]
   for (let i = 0; i < winningLines.length; i++) {
     const [a, b, c] = winningLines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+    if (!!squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
       return squares[a]
     }
   }

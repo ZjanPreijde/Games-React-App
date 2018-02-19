@@ -1,10 +1,16 @@
 import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+
 import calculateWinner from './gameUtils'
+
+// import setSquare from '../actions/games/setSquare'
+import updateGame from '../actions/games/updateGame'
+
 
 // import Square from './Square'
 function Square(props) {
   return (
-    <button className='square' onClick={props.onClick}>
+    <button className='square' onClick={props.onClick.bind(this)}>
       {props.value}
     </button>
   )
@@ -12,12 +18,14 @@ function Square(props) {
 
 class Board extends PureComponent {
   constructor(props) {
-    super(props);
-    this.state = {
-      gameSquares: Array(9).fill(null),
-      xIsNext: true,
-    };
+    super(props)
+
+    // this.state = {
+    //   gameSquares: Array(9).fill(null),
+    //   hasTurn: true,
+    //   xIsNext: true,
   }
+  // };
 
   boardHandleClick(index) {
     console.log('boardHandleClick() called', 'index', index)
@@ -25,39 +33,64 @@ class Board extends PureComponent {
     // Return handling to game?
     // this.props.handleClick(index)
 
-    const gameSquares = this.state.gameSquares.slice()
-    if (calculateWinner) {
+    const gameSquares = this.props.game.gameSquares.slice()
+    const hasTurn     = this.props.hasTurn
+    const xIsNext     = this.props.xIsNext
+    if (calculateWinner(gameSquares)) {
       // We have a winner already
+      console.log("We have a winner already")
       return
     }
     if (gameSquares[index]) {
       // Square played already
+      console.log("Square is already clicked")
       return
     }
-    squares[index] = this.state.xIsNext ? 'X' : 'O';
-    this.setState({
-      gameSquares: gameSquares,
-      xIsNext: !this.xIsNext,
-    })
-  }
+    if (!hasTurn) {
+      // Square played already
+      console.log("It is not your turn")
+      return
+    }
+
+
+    gameSquares[index] = xIsNext ? 'X' : 'O'
+    // this.setState({
+    //   gameSquares: gameSquares,
+    //   hasTurn: !hasTurn,
+    //   xIsNext: !this.xIsNext,
+    // })
+
+    this.props.game.gameSquares = gameSquares
+
+    const { updateGame, game } = this.props
+
+    console.log('calling updateGame(game) ...')
+    updateGame(game)
+    console.log('boardHandleClick() done')
+}
 
   renderSquare(index) {
     return (
       <Square
-        value={this.state.gameSquares[index]}
-        index={index}
+        value={this.props.game.gameSquares[index]}
+        // index={index}
         onClick={() => this.boardHandleClick(index)}
       />
     )
   }
 
   render() {
-    const winner = calculateWinner(this.state.gameSquares);
+    console.log('this.props from Board-render() :')
+    console.log(this.props)
+
+    const gameSquares = this.props.game.gameSquares.slice()
+    const winner      = calculateWinner(gameSquares);
+    const xIsNext     = this.props.xIsNext
     let status
     if (winner) {
       status = 'Winner: ' + winner
     } else {
-      status = 'Next player: ' + this.state.xIsNext ? 'X' : 'O'
+      status = 'Next player: ' + (xIsNext ? 'X' : 'O')
     }
 
     return (
@@ -78,9 +111,25 @@ class Board extends PureComponent {
           {this.renderSquare(7)}
           {this.renderSquare(8)}
         </div>
+        <div className="debug-props">
+          <h2>Debug Props from Board</h2>
+          <pre>{JSON.stringify(this.props, true, 2)}</pre>
+        </div>
 
       </div>
     );
   }
 }
-export default Board
+
+const mapStateToProps = ({ currentUser, games }, { match }) => {
+  const game     = games.filter( (g) => (g._id === match.params.gameId) )[0]
+  const isPlayer = game && game.players.filter((player) => (player.userId === currentUser._id)).length > 0
+
+  return {
+    game,
+    currentUser,
+    isPlayer,
+    open: game && !isPlayer && game.players.length < 2
+  }
+}
+export default connect(mapStateToProps, { updateGame })(Board)

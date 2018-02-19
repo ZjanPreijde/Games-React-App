@@ -12,7 +12,7 @@ class JoinGameDialog extends PureComponent {
     open: PropTypes.bool,
   }
 
-  joinGame = () => {
+  doJoinGame = () => {
     const { joinGame, game } = this.props
     joinGame(game)
   }
@@ -32,7 +32,7 @@ class JoinGameDialog extends PureComponent {
         label="Join Game"
         primary={true}
         keyboardFocused={true}
-        onClick={this.joinGame}
+        onClick={this.doJoinGame}
       />,
     ]
 

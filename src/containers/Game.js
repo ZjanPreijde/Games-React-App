@@ -12,7 +12,7 @@ import { connect as subscribeToWebsocket } from '../actions/websocket'
 import JoinGameDialog from '../components/games/JoinGameDialog'
 import Board from './Board'
 // Helpers
-import calculateWinner from './gameUtils'
+// import calculateWinner from './gameUtils'
 // Styling
 import './Game.css'
 
@@ -99,20 +99,20 @@ class Game extends PureComponent {
 
   render() {
     const { game } = this.props
+    const currentUserName = this.props.currentUserName
 
     if (!game) return null
 
-    const title = game.players.map(p => (p.name || null))
+    const title = game.players
+      .map(p => (p.name || null))
       .filter(n => !!n)
-      .join(' vs ')
+      .join(' is playing ')
 
     return (
       <div className="game-container">
         <div className="Game">
-          <h1>Tic Tac Toe for squares</h1>
-          <p>{title}</p>
-
-          <h1>Play TicTacToe!</h1>
+          <h1>Hi {currentUserName}, enjoy <em>Tic Tac Toe for squares</em></h1>
+          <h2>{title}</h2>
 
           <Board
            // handleClick={(index) => this.gameHandleClick(index)}
@@ -133,14 +133,17 @@ class Game extends PureComponent {
 
 const mapStateToProps = ({ currentUser, games }, { match }) => {
   const game          = games.filter((g) => (g._id === match.params.gameId))[0]
+  const isPlayer      = game && game.players.filter((p) => (p.userId === currentUser._id)).length > 0
   const currentPlayer = game && game.players.filter((p) => (p.userId === currentUser._id))[0]
   const hasTurn       = !!currentPlayer && game.players[game.turn].userId === currentUser._id
+  const currentUserName = currentUser.name
   return {
-    currentPlayer,
     game,
-    isPlayer: !!currentPlayer,
+    currentPlayer,
+    isPlayer,
     hasTurn,
-    isJoinable: game && !currentPlayer && game.players.length < 2
+    currentUserName,
+    isJoinable: game && !currentPlayer && game.players.length < 2,
   }
 }
 
@@ -148,5 +151,5 @@ export default connect(mapStateToProps, {
   subscribeToWebsocket,
   fetchOneGame,
   fetchPlayers,
-  // updateGame
+  // updateGame,
 })(Game)

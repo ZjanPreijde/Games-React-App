@@ -49,7 +49,8 @@ class Lobby extends PureComponent {
 
     if (!game.players[0].name) { this.props.fetchPlayers(game) }
 
-    const title = game.players.map(p => (p.name || null))
+    const title = game.players
+      .map(p => (p.name || null))
       .filter(n => !!n)
       .join(' vs ')
 
@@ -80,6 +81,7 @@ class Lobby extends PureComponent {
 
 const mapStateToProps = ({ games, currentUser }) => ({ games, currentUser })
 
-export default connect(mapStateToProps,
-  { fetchGames, subscribeToWebsocket, fetchPlayers, push }
-)(Lobby)
+export default connect(
+    mapStateToProps,
+    { fetchGames, subscribeToWebsocket, fetchPlayers, push }
+  )(Lobby)
